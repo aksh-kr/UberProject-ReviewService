@@ -6,14 +6,12 @@ import com.example.UberReviewService.models.Review;
 import com.example.UberReviewService.repositories.BookingRepository;
 import com.example.UberReviewService.repositories.DriverRepository;
 import com.example.UberReviewService.repositories.ReviewRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ReviewService implements CommandLineRunner {
@@ -28,6 +26,7 @@ public class ReviewService implements CommandLineRunner {
         this.driverRepository = driverRepository;
     }
 
+    @Transactional
     @Override
     public void run(String... args) throws Exception {
 
@@ -58,9 +57,35 @@ public class ReviewService implements CommandLineRunner {
 //
 //        reviewRepository.deleteById(2L);
 
+//
+//        List<Long> driverIds = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
+//        List<Driver> drivers = driverRepository.findAllByIdIn(driverIds);
+//
+////        List<Booking> bookings = bookingRepository.findAllByDriverIn(drivers);
+//
+//        for(Driver driver : drivers) {
+//            List<Booking> bookings = driver.getBookings();
+//            bookings.forEach(booking -> System.out.println(booking.getId()));
+//        }
 
-        List<Long> driverIds = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
-        List<Driver> drivers = driverRepository.findAllByIdIn(driverIds);
+//        Optional<Driver> driver = driverRepository.findById(1L);
+//        if(driver.isPresent()) {
+//            System.out.println(driver.get().getName());
+//            List<Booking> b = driver.get().getBookings();
+//
+//            for(Booking booking : b) {
+//                System.out.println(booking.getId());
+//            }
+//        }
+
+
+
+//        Optional<Driver> d = driverRepository.hqlFindByIdAndLicenseNumber(1L, "ABC");
+//        Optional<Driver> d = driverRepository.hqlFindByIdAndLicense(1L, "ABC");
+//        System.out.println(d.get().getName());
+
+        List<Long> driver_ids = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
+        List<Driver> drivers = driverRepository.findAllByIdIn(driver_ids);
 
 //        List<Booking> bookings = bookingRepository.findAllByDriverIn(drivers);
 
@@ -68,5 +93,7 @@ public class ReviewService implements CommandLineRunner {
             List<Booking> bookings = driver.getBookings();
             bookings.forEach(booking -> System.out.println(booking.getId()));
         }
+
     }
+
 }
