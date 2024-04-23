@@ -35,6 +35,12 @@ public class ReviewController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<Review> addReview(@RequestBody Review reviewRequest) {
+        Review createdReview = this.reviewService.publishReview(reviewRequest);
+        return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReviewById(@PathVariable("reviewId") Long reviewId) {
         try {

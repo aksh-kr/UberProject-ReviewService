@@ -13,9 +13,13 @@ import lombok.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Review extends BaseModel{
 
+    @Column(nullable = false)
     private String content;
 
     private Double rating;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Booking booking;
 
     @Override
     public String toString() {
