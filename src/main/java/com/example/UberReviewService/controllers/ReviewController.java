@@ -1,5 +1,8 @@
 package com.example.UberReviewService.controllers;
 
+import com.example.UberReviewService.adapters.CreateReviewDtoToReviewAdapter;
+import com.example.UberReviewService.dtos.CreateReviewDto;
+import com.example.UberReviewService.dtos.ReviewDto;
 import com.example.UberReviewService.models.Review;
 import com.example.UberReviewService.services.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -14,9 +17,11 @@ import java.util.Optional;
 @RequestMapping("/api/v1/reviews")
 public class ReviewController {
     private ReviewService reviewService;
+    private CreateReviewDtoToReviewAdapter createReviewDtoToReviewAdapter;
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, CreateReviewDtoToReviewAdapter createReviewDtoToReviewAdapter) {
         this.reviewService = reviewService;
+        this.createReviewDtoToReviewAdapter = createReviewDtoToReviewAdapter;
     }
 
     @GetMapping
@@ -36,9 +41,21 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<Review> addReview(@RequestBody Review reviewRequest) {
-        Review createdReview = this.reviewService.publishReview(reviewRequest);
-        return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
+    public ResponseEntity<?> addReview(@RequestBody CreateReviewDto reviewRequest) {
+        Review incomingReview = this.createReviewDtoToReviewAdapter.convertDto(reviewRequest);
+        if(incomingReview == null) {
+            return new ResponseEntity<>("Invalid arguments", HttpStatus.BAD_REQUEST);
+        }
+        Review createdReview = this.reviewService.publishReview(incomingReview);
+        ReviewDto response = ReviewDto.builder()
+                .id(createdReview.getId())
+                .rating(createdReview.getRating())
+                .content(createdReview.getContent())
+                .booking(createdReview.getBooking().getId())
+                .createdAt(createdReview.getCreatedAt())
+                .updatedAt(createdReview.getUpdatedAt())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{reviewId}")
